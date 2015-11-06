@@ -6,50 +6,59 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.Toast;
 
-public class HybridWebActivity extends Activity {
+public class HybridWebActivity extends Activity implements OnClickListener {
 
-	
+	Button btnWeb80;
+	Button btnWeb8080;
 	WebView myweb;
-	
+
 	@SuppressLint("JavascriptInterface")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_hybrid_web);
-		
+
+		btnWeb80 = (Button) findViewById(R.id.btnWeb80);
+		btnWeb8080 = (Button) findViewById(R.id.btnWeb8080);
+
+		btnWeb80.setOnClickListener(this);
+		btnWeb8080.setOnClickListener(this);
+
 		myweb = (WebView) findViewById(R.id.myweb);
-		
+
 		WebSettings settings = myweb.getSettings();
 		settings.setJavaScriptEnabled(true);
 		settings.setBuiltInZoomControls(true);
-		
+
 		myweb.addJavascriptInterface(new MyJavascriptInterface(), "android");
-		myweb.setWebViewClient(new MyWebViewClient());	// a href
+		myweb.setWebViewClient(new MyWebViewClient()); // a href
 		myweb.setWebChromeClient(new WebChromeClient()); // alert
-		
-		//myweb.loadUrl("http://192.168.10.29");
-		myweb.loadUrl("http://192.168.10.29:8080/web/index.jsp");
-		
+
+		// myweb.loadUrl("http://192.168.10.29");
+		myweb.loadUrl("http://www.soen.kr");
+		// web.loadUrl("http://192.168.10.29:8080/web/index.jsp");
+
 	}
-	
-	class MyJavascriptInterface{
-		public void showToast(String msg)
-		{
+
+	class MyJavascriptInterface {
+		public void showToast(String msg) {
 			Log.i("###", msg);
 			Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 		}
 	}
-	
-	class MyWebViewClient extends WebViewClient
-	{
+
+	class MyWebViewClient extends WebViewClient {
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
-			Log.i("###", "url = "+url);
+			Log.i("###", "url = " + url);
 			view.loadUrl(url);
 			return true;
 		}
@@ -72,5 +81,19 @@ public class HybridWebActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btnWeb80:
+			myweb.loadUrl("http://192.168.10.29");
+			break;
+		case R.id.btnWeb8080:
+			myweb.loadUrl("http://192.168.10.29:8080/web/");
+			break;
+		default:
+			break;
+		}
 	}
 }
